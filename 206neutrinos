@@ -1,0 +1,112 @@
+#!/usr/bin/env python3
+
+##
+## EPITECH PROJECT, 2020
+## 206neutrinos
+## File description:
+## 206neutrinos
+##
+
+import sys
+from math import sqrt
+
+class Neutrinos():
+    def __init__(self, nbVal, arithmetic, harmonic, standardDev):
+        self.numberValue = nbVal
+        self.arithmeticMean = arithmetic
+        self.harmonicMean = harmonic
+        self.standardDeviation = standardDev
+
+    def calculateBeforeVariableModification(self):
+        return (pow(self.standardDeviation, 2) + pow(self.arithmeticMean, 2)) * self.numberValue
+
+    def calculateNumberValue(self):
+        return self.numberValue + 1
+
+    def calculateArithmeticMean(self, newValue):
+        divisor = self.arithmeticMean * (self.numberValue - 1) + newValue
+        if (self.numberValue == 0):
+            return 0
+        return divisor / self.numberValue
+
+    def calculateHarmonicMean(self, newValue):
+        if (self.harmonicMean == 0):
+            return 0
+        dividend = (1 / newValue) + ((self.numberValue - 1) / self.harmonicMean)
+        if (dividend == 0):
+            return 0
+        return self.numberValue / dividend
+
+    def calculateStandardDeviation(self, newValue, temporary):
+        dividend = temporary + pow(newValue, 2)
+        if (self.numberValue == 0):
+            return 0
+        squareable = (dividend / self.numberValue) - pow(self.arithmeticMean, 2)
+        if (squareable <= 0):
+            return 0
+        return sqrt(squareable)
+
+    def calculation(self, newValue):
+        temporary = self.calculateBeforeVariableModification()
+        self.numberValue = self.calculateNumberValue()
+        self.arithmeticMean = self.calculateArithmeticMean(newValue)
+        self.harmonicMean = self.calculateHarmonicMean(newValue)
+        self.standardDeviation = self.calculateStandardDeviation(newValue, temporary)
+        self.rootMeanSquare = sqrt((temporary + pow(newValue, 2)) / self.numberValue)
+
+    def displayResults(self):
+        print("\tNumber of values:\t{}".format(self.numberValue))
+        print("\tStandard deviation:\t{:.2f}".format(self.standardDeviation, 2))
+        print("\tArithmetic mean:\t{:.2f}".format(self.arithmeticMean, 2))
+        print("\tRoot mean square:\t{:.2f}".format(self.rootMeanSquare, 2))
+        print("\tHarmonic mean:\t\t{:.2f}".format(self.harmonicMean, 2), end='\n\n')
+
+    def mainLoop(self):
+        try:
+            line = input("Enter next value: ")
+        except:
+            exit(0)
+        while (line != "END"):
+            line = line.strip()
+            if (line == ""):
+                    exit(0)
+            try:
+                line = float(line)
+                if (line < 0):
+                    exit(84)
+                self.calculation(line)
+            except:
+                exit(84)
+
+            self.displayResults()
+
+            try:
+                line = input("Enter next value: ")
+            except:
+                exit(0)
+
+def checkValidNumbers(lengthArgs):
+    for i in range(1, lengthArgs):
+        try:
+            number = int(sys.argv[i])
+            if (number <= 0):
+                exit(84)
+        except:
+            exit(84)
+
+def help():
+    file = open("HELP.txt", "r")
+    print(file.read())
+
+if __name__ == "__main__":
+    lengthArgs = len(sys.argv)
+    if (lengthArgs == 2 and sys.argv[1] == "-h"):
+        help()
+        exit(0)
+    if (lengthArgs != 5):
+        exit(84)
+    checkValidNumbers(lengthArgs)
+    neutrinos = Neutrinos(int(sys.argv[1]), int(sys.argv[2]),
+    int(sys.argv[3]), int(sys.argv[4]))
+    neutrinos.mainLoop()
+    exit(0)
